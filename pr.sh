@@ -1,6 +1,7 @@
-#!/bin/sh
-git stash
+#!/bin/env bash
 git fetch upstream
-git rebase upstream/release_zbb_master
-git log
-read q
+localBranch=`git branch --show-current`
+remoteBranchList=`git branch -r`
+branch=`echo "${remoteBranchList}" | grep  "upstream/.*${localBranch}"`
+git rb ${branch}
+
