@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/sh
 path=gradle.properties
 
 # flag=`grep "systemProp.http.proxyPort.*" ${path}`
@@ -10,6 +10,8 @@ path=gradle.properties
 
 sed -i /"[ \f\n\r\t\v]*systemProp.http.*proxy.*"/d ${path}
 
+echo $'\n'>>${path}
+echo "#gradle proxy">>${path}
 echo "systemProp.http.proxyHost=127.0.0.1">> ${path}
 echo "systemProp.http.proxyPort=1080">> ${path}
 echo "systemProp.https.proxyHost=127.0.0.1">> ${path}
