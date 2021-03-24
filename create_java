@@ -1,0 +1,71 @@
+#!/bin/sh
+path=$1
+src=src/main/java/com/example/lib
+build=build.gradle
+
+
+if [ ! -d "$name" ]; then
+ mkdir -p $path
+ cd $path
+ mkdir -p $src
+ mkdir -p libs
+ touch build.gradle
+else
+	echo $name exist
+	exit 0
+fi
+
+cat > $build << EOF
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+def name = '$1'
+def ver = 'v1.0.0'
+
+buildscript{
+	repositories{
+		jcenter()
+	}
+	dependencies{
+		classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
+	}
+}
+
+
+shadowJar{
+	manifest{
+		attributes 'Main-Class':'com.example.lib.Main'
+	}
+	baseName = name
+	classifier = null
+	version = ver
+	dependencies{
+
+	}
+}
+repositories{
+	jcenter()
+	google()
+	mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+dependencies{
+	implementation fileTree(dir:'libs',include: ['*.jar'])
+}
+EOF
+
+cd $src
+cat > Main.java << EOF
+package com.example.lib;
+
+public class Main {
+    public static void main(String[] args) {
+       	System.out.println("hello world");
+    }
+}
+EOF
+
