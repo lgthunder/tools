@@ -81,9 +81,16 @@ public class Main {
     }
 
     public static String getRoot() {
-        String currentPath = Main.class.getResource("").getPath();
-        String parent = currentPath.substring(5, currentPath.length() - ${#path} - 12 - 2 - Main.class.getPackage().getName().length());
-        return parent + "$path";
+        URL url =Main.class.getResource("");
+        String protocol = url.getProtocol();
+        String currentPath = url.getPath();
+        String parent;
+        if(protocol.equals("jar")){
+            parent = currentPath.substring(5, currentPath.length() - ${#path} - 12 - 2 - Main.class.getPackage().getName().length());
+        }else{
+            parent = currentPath.substring(0, currentPath.length() - 1 - Main.class.getPackage().getName().length());
+        }
+        return  parent + "$path";
     }
 
      private static void createProperties() {
