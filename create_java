@@ -1,7 +1,9 @@
 #!/bin/sh
 path=$1
-src=src/main/java/com/example/lib
+src=src/main/java/com/lg/$path
+res=src/main/resources
 build=build.gradle
+
 
 
 if [ ! -d "$name" ]; then
@@ -9,6 +11,7 @@ if [ ! -d "$name" ]; then
  cd $path
  mkdir -p $src
  mkdir -p libs
+ mkdir -p $res
  touch build.gradle
 else
 	echo $name exist
@@ -34,7 +37,7 @@ buildscript{
 
 shadowJar{
 	manifest{
-		attributes 'Main-Class':'com.example.lib.Main'
+		attributes 'Main-Class':'com.lg.$path.Main'
 	}
 	baseName = name
 	classifier = null
@@ -60,11 +63,54 @@ EOF
 
 cd $src
 cat > Main.java << EOF
-package com.example.lib;
+package com.lg.$path;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Properties;
 
 public class Main {
+
+	public static Properties pop;
+    public static  File popFile;
+
     public static void main(String[] args) {
        	System.out.println("hello world");
+    }
+
+    public static String getRoot() {
+        String currentPath = Main.class.getResource("").getPath();
+        String parent = currentPath.substring(5, currentPath.length() - ${#path} - 12 - 2 - Main.class.getPackage().getName().length());
+        return parent + "$path";
+    }
+
+     private static void createProperties() {
+        popFile = new File(getRoot(), "config.properties");
+        pop = new Properties();
+        if (!popFile.exists()) {
+
+        	 if(!popFile.getParentFile().exists()){
+                popFile.getParentFile().mkdirs();
+            }
+            
+            try {
+                popFile.createNewFile();
+                pop.setProperty("title", "hello world");
+                pop.store(new FileWriter(popFile), "init");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            pop.load(new FileReader(popFile));        
+            String title = pop.getProperty("title");
+            System.out.println("pop  title : "+title);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 EOF
