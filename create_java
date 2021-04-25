@@ -6,7 +6,7 @@ build=build.gradle
 
 
 
-if [ ! -d "$name" ]; then
+if [ ! -d "$path" ]; then
  mkdir -p $path
  cd $path
  mkdir -p $src
@@ -14,8 +14,8 @@ if [ ! -d "$name" ]; then
  mkdir -p $res
  touch build.gradle
 else
-	echo $name exist
-	exit 0
+    echo $path exist
+    exit 0
 fi
 
 cat > $build << EOF
@@ -26,30 +26,30 @@ def name = '$1'
 def ver = 'v1.0.0'
 
 buildscript{
-	repositories{
-		jcenter()
-	}
-	dependencies{
-		classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
-	}
+    repositories{
+        jcenter()
+    }
+    dependencies{
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
+    }
 }
 
 
 shadowJar{
-	manifest{
-		attributes 'Main-Class':'com.lg.$path.Main'
-	}
-	baseName = name
-	classifier = null
-	version = ver
-	dependencies{
+    manifest{
+        attributes 'Main-Class':'com.lg.$path.Main'
+    }
+    baseName = name
+    classifier = null
+    version = ver
+    dependencies{
 
-	}
+    }
 }
 repositories{
-	jcenter()
-	google()
-	mavenCentral()
+    jcenter()
+    google()
+    mavenCentral()
 }
 
 sourceCompatibility = 1.8
@@ -57,7 +57,7 @@ targetCompatibility = 1.8
 
 
 dependencies{
-	implementation fileTree(dir:'libs',include: ['*.jar'])
+    implementation fileTree(dir:'libs',include: ['*.jar'])
 }
 EOF
 
@@ -73,11 +73,11 @@ import java.util.Properties;
 
 public class Main {
 
-	public static Properties pop;
+    public static Properties pop;
     public static  File popFile;
 
     public static void main(String[] args) {
-       	System.out.println("hello world");
+        System.out.println("hello world");
     }
 
     public static String getRoot() {
@@ -91,7 +91,7 @@ public class Main {
         pop = new Properties();
         if (!popFile.exists()) {
 
-        	 if(!popFile.getParentFile().exists()){
+             if(!popFile.getParentFile().exists()){
                 popFile.getParentFile().mkdirs();
             }
             
